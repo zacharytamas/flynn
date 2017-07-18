@@ -1,7 +1,6 @@
 
-const hue = require('node-hue-api'),
-      HueApi = hue.HueApi,
-      lightState = hue.lightState;
+const huejay = require('huejay');
+
 
 let hueCredentials;
 
@@ -14,30 +13,15 @@ try {
 class HueAPIWrapper {
 
   constructor({hostname, username}) {
-    this.api = HueApi(hostname, username);
+    this.client = new huejay.Client({host: hostname, username: username });
   }
 
-  listLights() {
-    this.api.lights().then(result => {
-      console.log(result);
-    })
-  }
-
-  turnOn(lightId) {
-    this.api.setLightState(lightId,
-      lightState.create().on()).done();
-  }
-
-  turnOff(lightId) {
-    this.api.setLightState(lightId,
-      lightState.create().off()).done();
+  getAllLights() {
+    return this.client.lights.getAll();
   }
 
 }
 
 const api = new HueAPIWrapper(hueCredentials);
-api.listLights();
 
-api.turnOn('6');
-
-exports = {api};
+module.exports = {api};
