@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const api = require('./hue').api;
-const DATA_PATH = './data/';
+const DATA_PATH = 'data/';
 
 const sensors = [
   {id: 5, location: 'Great Room', file: 'greatroom.tsv'}
