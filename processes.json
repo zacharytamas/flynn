@@ -1,0 +1,9 @@
+{
+  "apps" : [
+    {
+      "name": "temperature-logger",
+      "script": "./hue/temperature-logger.js",
+      "cron_restart": "0 15 * * *"
+    }
+  ]
+}
