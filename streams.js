@@ -2,7 +2,7 @@
 const Rx = require('rxjs/Rx');
 const hueApi = require('./hue/hue').api;
 
-const HUE_SENSOR_POLL_RATE = 10 * 60 * 1000;  // ten minutes
+const HUE_SENSOR_POLL_RATE = 5 * 60 * 1000;  // ten minutes
 
 const hueSensorData = new Rx.Subject();
 
@@ -12,10 +12,21 @@ Rx.Observable.interval(HUE_SENSOR_POLL_RATE)
       .then(sensors => sensors.forEach(s => hueSensorData.next(s)));
   });
 
-const temperatureSensors = hueSensorData.filter(sensor =>
-  sensor.type == 'ZLLTemperature');
+const distinctSensorData = hueSensorData
+  .distinct(sensor => sensor.state.lastUpdated);
+
+const temperatureSensors = distinctSensorData
+  .filter(sensor => sensor.type == 'ZLLTemperature');
+
+const presenceSensors = distinctSensorData
+  .filter(sensor => sensor.type == 'ZLLPresence');
+
+const lightLevelSensors = distinctSensorData
+  .filter(sensor => sensor.type == 'ZLLLightLevel');
 
 module.exports = {
   hueSensorData,
-  temperatureSensors
-}
+  temperatureSensors,
+  presenceSensors,
+  lightLevelSensors
+};
