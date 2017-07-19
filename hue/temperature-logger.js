@@ -1,7 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 
 const api = require('./hue').api;
-const DATA_PATH = 'data/';
+const DATA_PATH = path.join(__dirname, 'data');
 
 const sensors = [
   {id: 5, location: 'Great Room', file: 'greatroom.tsv'}
@@ -11,7 +12,7 @@ function recordData() {
   sensors.forEach(sensor =>
     api.client.sensors.getById(sensor.id)
       .then(s => fs.appendFile(
-        `${DATA_PATH}temp-${sensor.file}`,
+        `${DATA_PATH}/temp-${sensor.file}`,
         `${s.state.lastUpdated.replace('T', ' ')}\t${s.state.temperature}\n`
       ))
       .then(_ => console.log('Wrote data for', sensor.location)));
