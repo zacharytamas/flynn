@@ -2,8 +2,7 @@
 const Rx = require('rxjs/Rx');
 const hueApi = require('./hue/hue').api;
 
-// TODO Temporarily high during testing
-const HUE_SENSOR_POLL_RATE = 5 * 1000;
+const HUE_SENSOR_POLL_RATE = 10 * 60 * 1000;  // ten minutes
 
 const hueSensorData = new Rx.Subject();
 
