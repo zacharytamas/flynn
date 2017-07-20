@@ -5,13 +5,13 @@ const DATA_PATH = path.join(__dirname, 'data');
 const {temperatureSensors} = require('../streams');
 
 const sensors = {
-  5: {location: 'Great Room', file: 'greatroom.tsv'}
+  5: {location: 'Great Room', file: 'greatroom'}
 };
 
-function recordData(sensorConfig, sensor) {
+function recordData(sensorConfig, lastUpdated, temperature) {
   fs.appendFileSync(
-    `${DATA_PATH}/temp-${sensorConfig.file}`,
-    `${sensor.state.lastUpdated.replace('T', ' ')}\t${sensor.state.temperature}\n`
+    `${DATA_PATH}/${lastUpdated.split('T')[0]}-${sensorConfig.file}.tsv`,
+    `${lastUpdated.replace('T', ' ')}\t${temperature}\n`
   );
 }
 
@@ -20,7 +20,7 @@ function start() {
     .filter(sensor => sensors[sensor.id])
     .subscribe(sensor => {
       const sensorConfig = sensors[sensor.id];
-      recordData(sensorConfig, sensor);
+      recordData(sensorConfig, sensor.state.lastUpdated, sensor.state.temperature);
       console.log('Recorded temperature for', sensorConfig.location, 'as', sensor.state.temperature);
     });
 }
