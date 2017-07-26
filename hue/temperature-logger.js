@@ -3,25 +3,37 @@ const path = require('path');
 
 const DATA_PATH = path.join(__dirname, 'data');
 const {temperatureSensors} = require('../streams');
+const keenClient = require('../keen').client;
 
 const sensors = {
-  5: {location: 'Great Room', file: 'greatroom'}
+  5: {location: 'Great Room'}
 };
 
 function recordData(sensorConfig, lastUpdated, temperature) {
-  fs.appendFileSync(
-    `${DATA_PATH}/${lastUpdated.split('T')[0]}-${sensorConfig.file}.tsv`,
-    `${lastUpdated.replace('T', ' ')}\t${temperature}\n`
-  );
+  keenClient.addEvent('temperature', {
+    location: sensorConfig.location,
+    temperatureCelsius: temperature,
+    temperatureFahrenheit: temperature * 1.8 + 32,
+    keen: {
+      timestamp: lastUpdated
+    }
+  }, (err, res) => {
+    if (err) {
+      console.warn("[TempLogger] There was a problem recording this to Keen.");
+    } else {
+      console.info('[TempLogger] Recorded temperature for',
+        sensorConfig.location, 'as', temperature);
+    }
+  });
 }
 
 function start() {
   temperatureSensors
-    .filter(sensor => sensors[sensor.id])
+    .filter(sensor => Boolean(sensors[sensor.id]))
     .subscribe(sensor => {
       const sensorConfig = sensors[sensor.id];
-      recordData(sensorConfig, sensor.state.lastUpdated, sensor.state.temperature);
-      console.log('Recorded temperature for', sensorConfig.location, 'as', sensor.state.temperature);
+      const {lastUpdated, temperature} = sensor.state;
+      recordData(sensorConfig, lastUpdated, temperature);
     });
 }
 
