@@ -2,7 +2,7 @@
 const Rx = require('rxjs/Rx');
 const hueApi = require('./hue/hue').api;
 
-const HUE_SENSOR_POLL_RATE = 1 * 60 * 1000;  // one minute
+const HUE_SENSOR_POLL_RATE = 0.5 * 60 * 1000;  // 30 seconds
 
 const hueSensorData = new Rx.Subject();
 
