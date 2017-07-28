@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_PATH = path.join(__dirname, 'data');
 const {temperatureSensors} = require('../streams');
 const keenClient = require('../keen').client;
 
@@ -28,6 +27,8 @@ function recordData(sensorConfig, lastUpdated, temperature) {
 }
 
 function start() {
+  console.info('[TempLogger] Started listening');
+
   temperatureSensors
     .filter(sensor => Boolean(sensors[sensor.id]))
     .subscribe(sensor => {
