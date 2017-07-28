@@ -2,3 +2,5 @@ hue-credentials.json
 node_modules/
 speech/mp3
 credentials.json
+keen-credentials.json
+hue/data
