@@ -24,7 +24,7 @@ function recordData(sensorConfig, state) {
     if (err) {
       console.warn("[LightLogger] There was a problem recording this to Keen.");
     } else {
-      console.info('[LightLogger] Recorded temperature for',
+      console.info('[LightLogger] Recorded light levels for',
         sensorConfig.location, 'as', lightLevel);
     }
   });
