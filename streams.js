@@ -4,13 +4,10 @@ const hueApi = require('./hue/hue').api;
 
 const HUE_SENSOR_POLL_RATE = 0.5 * 60 * 1000;  // 30 seconds
 
-const hueSensorData = new Rx.Subject();
-
-Rx.Observable.interval(HUE_SENSOR_POLL_RATE)
-  .subscribe(() => {
-    hueApi.client.sensors.getAll()
-      .then(sensors => sensors.forEach(s => hueSensorData.next(s)));
-  });
+const hueSensorData = Rx.Observable.interval(HUE_SENSOR_POLL_RATE)
+  .startWith(1)
+  .flatMap(() => Rx.Observable.fromPromise(hueApi.client.sensors.getAll()))
+  .flatMap(sensors => sensors)
 
 const distinctSensorData = hueSensorData
   .distinct(sensor => sensor.state.lastUpdated);
