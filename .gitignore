@@ -4,3 +4,4 @@ speech/mp3
 credentials.json
 keen-credentials.json
 hue/data
+.DS_Store
