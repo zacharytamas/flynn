@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "hue/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
